@@ -2,3 +2,5 @@ __pycache__/
 .gitignore
 .idea/
 .DS_Store
+.cache/
+*.pyc
