@@ -19,8 +19,8 @@ class ModelTests(TestCase):
     def setUp(self):
         update('drop table if exists student')
 
-    def tearDown(self):
-        update('drop table if exists student')
+    # def tearDown(self):
+    #     update('drop table if exists student')
 
     def test_create_table_sql(self):
         s = Student()
@@ -29,6 +29,7 @@ class ModelTests(TestCase):
 
     def test_create_table(self):
         s = Student()
+        update('drop table if exists student')
         s.create_table()
         u1 = dict(id=1, name='Chao', email='1@test.org')
         insert('student', **u1)
@@ -41,6 +42,7 @@ class ModelTests(TestCase):
 
     def test_get_by_id(self):
         s = Student()
+        update('drop table if exists student')
         s.create_table()
         u1 = dict(id=1, name='Chao', email='1@test.org')
         insert('student', **u1)
@@ -53,6 +55,7 @@ class ModelTests(TestCase):
 
     def test_get(self):
         s = Student()
+        update('drop table if exists student')
         s.create_table()
         u1 = dict(id=1, name='Chao', email='1@test.org')
         insert('student', **u1)
@@ -63,6 +66,7 @@ class ModelTests(TestCase):
 
     def test_get_all(self):
         s = Student()
+        update('drop table if exists student')
         s.create_table()
         u1 = dict(id=1, name='Chao', email='1@test.org')
         insert('student', **u1)
@@ -73,6 +77,7 @@ class ModelTests(TestCase):
 
     def test_get_first(self):
         s = Student()
+        update('drop table if exists student')
         s.create_table()
         u1 = dict(id=1, name='Chao', email='1@test.org')
         insert('student', **u1)
@@ -83,6 +88,7 @@ class ModelTests(TestCase):
 
     def test_count(self):
         s = Student()
+        update('drop table if exists student')
         s.create_table()
         u1 = dict(id=1, name='Chao', email='1@test.org')
         insert('student', **u1)
@@ -95,6 +101,7 @@ class ModelTests(TestCase):
 
     def test_count_all(self):
         s = Student()
+        update('drop table if exists student')
         s.create_table()
         u1 = dict(id=1, name='Chao', email='1@test.org')
         insert('student', **u1)
@@ -105,6 +112,7 @@ class ModelTests(TestCase):
 
     def test_update_all(self):
         s = Student()
+        update('drop table if exists student')
         s.create_table()
         u1 = dict(id=1, name='Chao', email='1@test.org')
         insert('student', **u1)
@@ -118,6 +126,7 @@ class ModelTests(TestCase):
         self.assertEqual('k', r2.name)
 
     def test_insert(self):
+        update('drop table if exists student')
         Student.create_table()
         u1 = dict(id=1, name='Chao', email='1@test.org')
         s = Student(**u1)
@@ -126,6 +135,7 @@ class ModelTests(TestCase):
         self.assertEqual('1@test.org', r.email)
 
     def test_delete(self):
+        update('drop table if exists student')
         Student.create_table()
         u1 = dict(id=1, name='Chao', email='1@test.org')
         s = Student(**u1)
@@ -137,6 +147,7 @@ class ModelTests(TestCase):
         self.assertEqual(0, len(r))
 
     def test_delete_by_pk(self):
+        update('drop table if exists student')
         Student.create_table()
         u1 = dict(id=1, name='Chao', email='1@test.org')
         s = Student(**u1)
@@ -146,6 +157,7 @@ class ModelTests(TestCase):
         self.assertEqual(0, len(r))
 
     def test_delete_by_attr(self):
+        update('drop table if exists student')
         Student.create_table()
         u1 = dict(id=1, name='Chao', email='1@test.org')
         s = Student(**u1)
