@@ -7,7 +7,8 @@ import time
 class DBTests(TestCase):
     @classmethod
     def setUpClass(cls):
-        init_engine(**configs['testDB'])
+        if not connector:
+            init_engine(**configs['testDB'])
 
     def setUp(self):
         update('drop table if exists user')
