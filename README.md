@@ -56,6 +56,7 @@ __tests/__ folder
 This folder contains the code for unit tests
 
 __config.py__
+
 The general settings for the framework.
 
 __runtests.py__
