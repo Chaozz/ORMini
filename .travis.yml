@@ -7,9 +7,12 @@ before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
   - pip install -U pip
 install:
+  - pip install coverage
+  - pip install coverage
 #  - pip install http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-2.0.4.zip#md5=3df394d89300db95163f17c843ef49df
 script:
-  - python runtests.py
+  - coverage run runtests.py
+  - codecov
 notifications:
   email:
     on_success: never
