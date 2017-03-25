@@ -17,7 +17,7 @@ class ModelTests(TestCase):
             init_engine(**configs['testDB'])
 
     def setUp(self):
-        update('drop table if exists student')
+        update('drop table if exists Student')
         Student.create_table()
 
     # def tearDown(self):
@@ -32,12 +32,12 @@ class ModelTests(TestCase):
         # s = Student()
         # s.create_table()
         u1 = dict(id=1, name='Chao', email='1@test.org')
-        insert('student', **u1)
+        insert('Student', **u1)
         u2 = dict(id=2, name='Ma', email='2@test.org')
-        insert('student', **u2)
-        r = select_one('select * from student where name=?', 'Chao').id
+        insert('Student', **u2)
+        r = select_one('select * from Student where name=?', 'Chao').id
         self.assertEqual(1, r)
-        r = select_one('select * from student where name=?', 'Ma')
+        r = select_one('select * from Student where name=?', 'Ma')
         self.assertEqual(u'2@test.org', r.email)
 
     # def test_get_by_id(self):
