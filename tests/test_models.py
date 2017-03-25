@@ -39,17 +39,17 @@ class ModelTests(TestCase):
         r = select_one('select * from student where name=?', 'Ma')
         self.assertEqual(u'2@test.org', r.email)
 
-    def test_get_by_id(self):
-        s = Student()
-        s.create_table()
-        u1 = dict(id=1, name='Chao', email='1@test.org')
-        insert('student', **u1)
-        u2 = dict(id=2, name='Ma', email='2@test.org')
-        insert('student', **u2)
-        r=Student.get_by_pk(1)
-        self.assertEqual('Chao', r.name)
-        r = Student.get_by_pk(2)
-        self.assertEqual('Ma', r.name)
+    # def test_get_by_id(self):
+    #     s = Student()
+    #     s.create_table()
+    #     u1 = dict(id=1, name='Chao', email='1@test.org')
+    #     insert('student', **u1)
+    #     u2 = dict(id=2, name='Ma', email='2@test.org')
+    #     insert('student', **u2)
+    #     r=Student.get_by_pk(1)
+    #     self.assertEqual('Chao', r.name)
+    #     r = Student.get_by_pk(2)
+    #     self.assertEqual('Ma', r.name)
 
     # def test_get(self):
     #     s = Student()
