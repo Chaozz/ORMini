@@ -53,10 +53,11 @@ class Model(Dict):
     def __init__(self, **kwargs):
         super(Model, self).__init__(**kwargs)
 
-    def create_table_sql(self):
+    @classmethod
+    def create_table_sql(cls):
         """generate create table SQL"""
-        sql=['create table `%s` (\n' % self.__name__]
-        for field in self.__fields__.values():
+        sql=['create table `%s` (\n' % cls.__name__]
+        for field in cls.__fields__.values():
             if isinstance(field, CharField):
                 sql.append('%s varchar(%d)' % (field.name, field.max_length))
             else:
@@ -64,14 +65,104 @@ class Model(Dict):
             if field.not_null:
                 sql.append(' NOT NULL')
             sql.append(',\n')
-        sql.append('  primary key( %s )\n' % self.__primary_key__.name)
+        sql.append('  primary key( %s )\n' % cls.__primary_key__.name)
         sql.append(');')
         return ''.join(sql)
 
-    def create_table(self):
-        db.update(self.create_table_sql())
+    @classmethod
+    def create_table(cls):
+        db.update(cls.create_table_sql())
 
+    @classmethod
+    def get_by_pk(cls, pk):
+        """Get by primary key"""
+        sql='select * from %s where %s=?' % (cls.__name__, cls.__primary_key__.name)
+        return cls(**db.select_one(sql, pk))
 
+    @classmethod
+    def get(cls, **kwargs):
+        """Get by attribute"""
+        if len(kwargs)!=1:
+            raise TypeError("invalid number of attributes")
+        sql = 'select * from %s where %s=?' % (cls.__name__, kwargs.keys()[0])
+        return [cls(**r) for r in db.select(sql, kwargs.values()[0])]
+
+    @classmethod
+    def get_all(cls):
+        """Get all tuples"""
+        sql = 'select * from %s' % cls.__name__
+        return [cls(**r) for r in db.select(sql)]
+
+    @classmethod
+    def get_first(cls, **kwargs):
+        """Get by attribute, return only the first result"""
+        if len(kwargs) != 1:
+            raise TypeError("invalid number of attributes")
+        sql = 'select * from %s where %s=?' % (cls.__name__, kwargs.keys()[0])
+        return cls(**db.select_one(sql, kwargs.values()[0]))
+
+    @classmethod
+    def count(cls, **kwargs):
+        """Count by attribute"""
+        if len(kwargs) != 1:
+            raise TypeError("invalid number of attributes")
+        sql = 'select count(*) from %s where %s=?' % (cls.__name__, kwargs.keys()[0])
+        return db.select_int(sql, kwargs.values()[0])
+
+    @classmethod
+    def count_all(cls):
+        """Count by attribute"""
+        sql = 'select count(*) from %s' % cls.__name__
+        return db.select_int(sql)
+
+    def update_all(self):
+        """Update all attributes in the tuple"""
+        L = []
+        args = []
+        for k, v in self.__fields__.items():
+            if v.editable:
+                if hasattr(self, k):
+                    arg = getattr(self, k)
+                else:
+                    arg = v.default
+                    setattr(self, k, arg)
+                L.append('`%s`=?' % k)
+                args.append(arg)
+        pk = self.__primary_key__.name
+        args.append(getattr(self, pk))
+        db.update('update %s set %s where %s=?' % (self.__name__, ','.join(L), pk), *args)
+        return self
+
+    def insert(self):
+        """Insert a tuple"""
+        params = {}
+        for k, v in self.__fields__.items():
+            if not hasattr(self, k):
+                setattr(self, k, v.default)
+            params[v.name] = getattr(self, k)
+        db.insert('%s' % self.__name__, **params)
+        return self
+
+    def delete(self):
+        """Delete the object in table"""
+        pk = self.__primary_key__.name
+        args = (getattr(self, pk),)
+        db.update('delete from %s where %s=?' % (self.__name__, pk), *args)
+        return self
+
+    @classmethod
+    def delete_by_pk(cls, pk):
+        """Delete by primary key"""
+        db.update('delete from %s where %s=?' % (cls.__name__, cls.__primary_key__.name), pk)
+        return
+
+    @classmethod
+    def delete_by_attr(cls, **kwargs):
+        """Delete by attribute"""
+        if len(kwargs) != 1:
+            raise TypeError("invalid number of attributes")
+        sql = 'delete from %s where %s=?' % (cls.__name__, kwargs.keys()[0])
+        return db.update(sql, kwargs.values()[0])
 
 
 
