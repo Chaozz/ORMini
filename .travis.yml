@@ -7,6 +7,10 @@ before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 install:
   - pip install -r requirements.txt
-  - pip install https://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-2.1.2.tar.gz
+  - pip install http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-2.0.4.zip#md5=3df394d89300db95163f17c843ef49df
 script:
   - python runtests.py
+notifications:
+  email:
+    on_success: never
+    on_failure: never
