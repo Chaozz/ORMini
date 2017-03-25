@@ -38,7 +38,7 @@ Structure
 
 #### Main folders explanation
 
-__wms/__ folder
+__ormini/__ folder
 
 This folder contains the source code.
 
