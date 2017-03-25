@@ -9,40 +9,41 @@ class ModelError(Exception):
 
 class ModelMetaClass(type):
     """Metaclass for all models."""
+
     def __new__(cls, name, bases, attrs):
         # Make sure initialization is only performed for subclasses of Model
         # (excluding Model class itself).
         parents = [b for b in bases if isinstance(b, ModelMetaClass)]
         if not parents:
             return type.__new__(cls, name, bases, attrs)
-        primary_key=None
-        fields=dict()
+        primary_key = None
+        fields = dict()
         # if table name not defined, set as the name of the class
-        if '__name__' not in attrs:
-            attrs['__name__']=name.lower()
+        if '__table_name__' not in attrs:
+            attrs['__table_name__'] = name.lower()
         for k, v in attrs.items():
             if isinstance(v, Field):
                 # if not specified, set field attribute name as field name,
                 if v.name is None:
-                    v.name=k
+                    v.name = k
                 # check duplicate primary key
                 if v.primary_key:
                     if primary_key:
                         raise ModelError("duplicate primary keys!")
-                    v.editable=False
-                    v.not_null=True
-                    primary_key=v
-                fields[k]=v
+                    v.editable = False
+                    v.not_null = True
+                    primary_key = v
+                fields[k] = v
                 # delete fields from attributes
                 attrs.pop(k)
         # if there is no primary_key, add an autoField
         if not primary_key:
             if 'id' not in attrs:
-                fields['id']=AutoPrimaryKeyField()
+                fields['id'] = AutoPrimaryKeyField()
             else:
                 raise ModelError('Primary key not defined!')
-        attrs['__primary_key__']=primary_key
-        attrs['__fields__']=fields
+        attrs['__primary_key__'] = primary_key
+        attrs['__fields__'] = fields
         return type.__new__(cls, name, bases, attrs)
 
 
@@ -56,7 +57,7 @@ class Model(Dict):
     @classmethod
     def create_table_sql(cls):
         """generate create table SQL"""
-        sql=['create table `%s` (\n' % cls.__name__]
+        sql = ['create table `%s` (\n' % cls.__table_name__]
         for field in cls.__fields__.values():
             if isinstance(field, CharField):
                 sql.append('%s varchar(%d)' % (field.name, field.max_length))
@@ -76,21 +77,21 @@ class Model(Dict):
     @classmethod
     def get_by_pk(cls, pk):
         """Get by primary key"""
-        sql='select * from %s where %s=?' % (cls.__name__, cls.__primary_key__.name)
+        sql = 'select * from %s where %s=?' % (cls.__table_name__, cls.__primary_key__.name)
         return cls(**db.select_one(sql, pk))
 
     @classmethod
     def get(cls, **kwargs):
         """Get by attribute"""
-        if len(kwargs)!=1:
+        if len(kwargs) != 1:
             raise TypeError("invalid number of attributes")
-        sql = 'select * from %s where %s=?' % (cls.__name__, kwargs.keys()[0])
+        sql = 'select * from %s where %s=?' % (cls.__table_name__, kwargs.keys()[0])
         return [cls(**r) for r in db.select(sql, kwargs.values()[0])]
 
     @classmethod
     def get_all(cls):
         """Get all tuples"""
-        sql = 'select * from %s' % cls.__name__
+        sql = 'select * from %s' % cls.__table_name__
         return [cls(**r) for r in db.select(sql)]
 
     @classmethod
@@ -98,7 +99,7 @@ class Model(Dict):
         """Get by attribute, return only the first result"""
         if len(kwargs) != 1:
             raise TypeError("invalid number of attributes")
-        sql = 'select * from %s where %s=?' % (cls.__name__, kwargs.keys()[0])
+        sql = 'select * from %s where %s=?' % (cls.__table_name__, kwargs.keys()[0])
         return cls(**db.select_one(sql, kwargs.values()[0]))
 
     @classmethod
@@ -106,13 +107,13 @@ class Model(Dict):
         """Count by attribute"""
         if len(kwargs) != 1:
             raise TypeError("invalid number of attributes")
-        sql = 'select count(*) from %s where %s=?' % (cls.__name__, kwargs.keys()[0])
+        sql = 'select count(*) from %s where %s=?' % (cls.__table_name__, kwargs.keys()[0])
         return db.select_int(sql, kwargs.values()[0])
 
     @classmethod
     def count_all(cls):
         """Count by attribute"""
-        sql = 'select count(*) from %s' % cls.__name__
+        sql = 'select count(*) from %s' % cls.__table_name__
         return db.select_int(sql)
 
     def update_all(self):
@@ -130,7 +131,7 @@ class Model(Dict):
                 args.append(arg)
         pk = self.__primary_key__.name
         args.append(getattr(self, pk))
-        db.update('update %s set %s where %s=?' % (self.__name__, ','.join(L), pk), *args)
+        db.update('update %s set %s where %s=?' % (self.__table_name__, ','.join(L), pk), *args)
         return self
 
     def insert(self):
@@ -140,20 +141,20 @@ class Model(Dict):
             if not hasattr(self, k):
                 setattr(self, k, v.default)
             params[v.name] = getattr(self, k)
-        db.insert('%s' % self.__name__, **params)
+        db.insert('%s' % self.__table_name__, **params)
         return self
 
     def delete(self):
         """Delete the object in table"""
         pk = self.__primary_key__.name
         args = (getattr(self, pk),)
-        db.update('delete from %s where %s=?' % (self.__name__, pk), *args)
+        db.update('delete from %s where %s=?' % (self.__table_name__, pk), *args)
         return self
 
     @classmethod
     def delete_by_pk(cls, pk):
         """Delete by primary key"""
-        db.update('delete from %s where %s=?' % (cls.__name__, cls.__primary_key__.name), pk)
+        db.update('delete from %s where %s=?' % (cls.__table_name__, cls.__primary_key__.name), pk)
         return
 
     @classmethod
@@ -161,11 +162,5 @@ class Model(Dict):
         """Delete by attribute"""
         if len(kwargs) != 1:
             raise TypeError("invalid number of attributes")
-        sql = 'delete from %s where %s=?' % (cls.__name__, kwargs.keys()[0])
+        sql = 'delete from %s where %s=?' % (cls.__table_name__, kwargs.keys()[0])
         return db.update(sql, kwargs.values()[0])
-
-
-
-
-
-
