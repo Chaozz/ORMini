@@ -18,6 +18,7 @@ class ModelTests(TestCase):
 
     def setUp(self):
         update('drop table if exists student')
+        Student.create_table()
 
     # def tearDown(self):
     #     update('drop table if exists student')
@@ -28,8 +29,8 @@ class ModelTests(TestCase):
         self.assertEqual(expect, s.create_table_sql())
 
     def test_create_table(self):
-        s = Student()
-        s.create_table()
+        # s = Student()
+        # s.create_table()
         u1 = dict(id=1, name='Chao', email='1@test.org')
         insert('student', **u1)
         u2 = dict(id=2, name='Ma', email='2@test.org')
