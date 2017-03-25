@@ -19,6 +19,9 @@ class ModelTests(TestCase):
     def setUp(self):
         update('drop table if exists student')
 
+    def tearDown(self):
+        update('drop table if exists student')
+
     def test_create_table_sql(self):
         s = Student()
         expect = 'create table `Student` (\nemail varchar(100),\nname varchar(255),\nid int NOT NULL,\n  primary key( id )\n);'
