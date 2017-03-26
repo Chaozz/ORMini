@@ -20,6 +20,10 @@ Install Requirements
 - Open a terminal, go to the project folder, and run this command to install all project dependencies:
 
       $ pip install -r requirements.txt
+      
+- to run all the tests and code linting:
+
+      $ python runtests.py
 
 Structure
 -----------
