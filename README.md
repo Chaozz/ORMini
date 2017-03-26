@@ -21,6 +21,8 @@ Install Requirements
 
       $ pip install -r requirements.txt
       
+- Modify the config.py for correct database connection 
+      
 - to run all the tests and code linting:
 
       $ python runtests.py
