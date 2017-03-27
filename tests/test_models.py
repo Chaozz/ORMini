@@ -2,6 +2,7 @@ from unittest import TestCase
 from ormini.db import *
 from config import configs
 from ormini.models import *
+from ormini.fields import IntegerField
 
 
 class Student(Model):

@@ -1,5 +1,5 @@
-from fields import *
-from utils import *
+from fields import Field, AutoPrimaryKeyField, CharField
+from utils import Dict
 import db
 
 

@@ -69,10 +69,10 @@ class TextField(Field):
 
 class AutoPrimaryKeyField(Field):
     def __init__(self, **kwargs):
-        kwargs['primary_key']=True
+        kwargs['primary_key'] = True
         kwargs['data_type'] = 'int'
         if 'name' not in kwargs:
-            kwargs['name']='id'
+            kwargs['name'] = 'id'
         if 'default' not in kwargs:
             kwargs['default'] = 0
         super(AutoPrimaryKeyField, self).__init__(**kwargs)

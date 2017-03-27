@@ -21,4 +21,4 @@ def flake8_main(args):
 
 if __name__ == "__main__":
     exit_on_failure(pytest.main(PYTEST_ARGS))
-    # exit_on_failure(flake8_main(FLAKE8_ARGS))
+    exit_on_failure(flake8_main(FLAKE8_ARGS))
