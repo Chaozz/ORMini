@@ -43,7 +43,7 @@ Structure
 ```
 
 #### Main folders explanation
-
+ 
 __ormini/__ folder
 
 This folder contains the source code.
