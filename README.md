@@ -2,7 +2,7 @@ ORMini
 ======
 
 [![Build Status](https://travis-ci.com/Chaozz/ORMini.svg?token=6YffMZSxSQ7Lqc6qFWCq&branch=master)](https://travis-ci.com/Chaozz/ORMini)
-[![codecov](https://codecov.io/gh/Chaozz/ORMini/branch/master/graph/badge.svg)](https://codecov.io/gh/Chaozz/ORMini)
+[![codecov](https://codecov.io/gh/Chaozz/ORMini/branch/master/graph/badge.svg?token=Fh1nvcRaJm)](https://codecov.io/gh/Chaozz/ORMini)
 
 CS542 Group Project
 
