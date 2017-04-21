@@ -248,6 +248,26 @@ def base_update(sql, *args):
             cursor.close()
 
 
+@with_connection
+def multi_base_update(sql, *args):
+    global db_context
+    cursor = None
+    sql = sql.replace('?', '%s')
+    logging.info('SQL: %s, ARGS: %s' % (sql, args))
+    try:
+        cursor = db_context.connection.cursor()
+        cursor.execute(sql, args, multi=True)
+        r = cursor.rowcount
+        # No transaction:
+        if db_context.transactions == 0:
+            logging.info('auto commit')
+            db_context.connection.commit()
+        return r
+    finally:
+        if cursor:
+            cursor.close()
+
+
 def insert(table, **kw):
     """Execute insert SQL"""
     cols, args = zip(*kw.items())
@@ -259,3 +279,9 @@ def insert(table, **kw):
 def update(sql, *args):
     """Execute update SQL"""
     return base_update(sql, *args)
+
+
+# TODO  fix bug
+def multi_update(sql, *args):
+    """Execute multi update SQL"""
+    return multi_base_update(sql, *args)

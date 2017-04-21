@@ -6,8 +6,8 @@ from ormini.fields import IntegerField
 
 
 class Student(Model):
-    id = IntegerField(primary_key=True)
-    name = CharField()
+    id = IntegerField(primary_key=True, db_index=True)
+    name = CharField(db_index=True)
     email = CharField(max_length=100)
 
 

@@ -73,6 +73,26 @@ class Model(Dict):
     @classmethod
     def create_table(cls):
         db.update(cls.create_table_sql())
+        cls.create_index()
+
+    @classmethod
+    def create_index_sql(cls):
+        sql = []
+        sql_create_index = "CREATE INDEX %(name)s ON %(table)s (%(columns)s);"
+        for field in cls.__fields__.values():
+            # if we have a index on field
+            if field.db_index:
+                sql.append(sql_create_index % {
+                    "name": "idx_" + field.name,
+                    "table": cls.__table_name__,
+                    "columns": field.name
+                })
+        return sql
+
+    @classmethod
+    def create_index(cls):
+        for sql in cls.create_index_sql():
+            db.update(sql)
 
     @classmethod
     def get_by_pk(cls, pk):

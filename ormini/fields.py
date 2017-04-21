@@ -11,7 +11,8 @@ class Field(object):
 
     def __init__(self, name=None, primary_key=False,
                  max_length=None, unique=False, not_null=False, data_type=None,
-                 default=NOT_PROVIDED, editable=True, choices=None, validators=()):
+                 default=NOT_PROVIDED, editable=True, choices=None, validators=(),
+                 db_index=False):
         self.name = name
         self.primary_key = primary_key
         self.max_length = max_length
@@ -22,6 +23,7 @@ class Field(object):
         self.editable = editable
         self.choices = choices
         self.validators = list(validators)
+        self.db_index = db_index
 
 
 class BooleanField(Field):
