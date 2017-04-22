@@ -74,6 +74,7 @@ class Model(Dict):
     def create_table(cls):
         db.update(cls.create_table_sql())
         cls.create_index()
+        cls.create_check()
 
     @classmethod
     def create_index_sql(cls):
@@ -92,6 +93,26 @@ class Model(Dict):
     @classmethod
     def create_index(cls):
         for sql in cls.create_index_sql():
+            db.update(sql)
+
+    @classmethod
+    def create_check_sql(cls):
+        sql_create_check = "ALTER TABLE %(table)s ADD CONSTRAINT %(name)s CHECK (%(check)s)"
+        sql = []
+        for field in cls.__fields__.values():
+            cnt = 0
+            for constraint in field.constraints:
+                cnt += 1
+                sql.append(sql_create_check % {
+                    "table": cls.__table_name__,
+                    "name": "check_" + field.name + "_" + str(cnt),
+                    "check": constraint
+                })
+        return sql
+
+    @classmethod
+    def create_check(cls):
+        for sql in cls.create_check_sql():
             db.update(sql)
 
     @classmethod

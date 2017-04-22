@@ -2,6 +2,12 @@ class NOT_PROVIDED:
     pass
 
 
+def check(value):
+    """Generate SQL of check constraints """
+
+    return 'CHECK (%s)' % value
+
+
 class Field(object):
     # Relation Flags
     many_to_many = None
@@ -12,7 +18,7 @@ class Field(object):
     def __init__(self, name=None, primary_key=False,
                  max_length=None, unique=False, not_null=False, data_type=None,
                  default=NOT_PROVIDED, editable=True, choices=None, validators=(),
-                 db_index=False):
+                 db_index=False, constraints=[]):
         self.name = name
         self.primary_key = primary_key
         self.max_length = max_length
@@ -24,6 +30,9 @@ class Field(object):
         self.choices = choices
         self.validators = list(validators)
         self.db_index = db_index
+        # https://dev.mysql.com/doc/refman/5.7/en/create-table.html
+        # The CHECK clause is parsed but ignored by MySQL
+        self.constraints = []
 
 
 class BooleanField(Field):

@@ -2,11 +2,11 @@ from unittest import TestCase
 from ormini.db import *
 from config import configs
 from ormini.models import *
-from ormini.fields import IntegerField
+from ormini.fields import *
 
 
 class Student(Model):
-    id = IntegerField(primary_key=True, db_index=True)
+    id = IntegerField(primary_key=True, db_index=True, constraints=[check('id > 0')])
     name = CharField(db_index=True)
     email = CharField(max_length=100)
 
