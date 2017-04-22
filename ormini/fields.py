@@ -87,3 +87,17 @@ class AutoPrimaryKeyField(Field):
         if 'default' not in kwargs:
             kwargs['default'] = 0
         super(AutoPrimaryKeyField, self).__init__(**kwargs)
+
+
+class ForeignKeyField(IntegerField):
+    def __init__(self, related_model, related_field,
+                 on_delete=None, on_update=None, **kwargs):
+        from models import Model
+        # check if related_model is valid
+        if related_model!= 'self' and not issubclass(related_model, Model):
+            raise TypeError("related_model must refer to a Model name!")
+        self.related_model = related_model
+        self.related_field = related_field
+        self.on_delete = on_delete
+        self.on_update = on_update
+        super(ForeignKeyField, self).__init__(**kwargs)

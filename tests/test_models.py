@@ -11,6 +11,12 @@ class Student(Model):
     email = CharField(max_length=100)
 
 
+class Professor(Model):
+    id = IntegerField(primary_key=True, db_index=True, constraints=[check('id > 0')])
+    name = CharField()
+    student = ForeignKeyField(Student, related_field='id')
+
+
 class ModelTests(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -18,6 +24,7 @@ class ModelTests(TestCase):
             init_engine(**configs['testDB'])
 
     def setUp(self):
+        update('drop table if exists professor')
         update('drop table if exists student')
         Student.create_table()
 
@@ -134,3 +141,13 @@ class ModelTests(TestCase):
         r = Student.get_all()
         self.assertEqual(0, len(r))
 
+    def test_foreignkey(self):
+        update('drop table if exists professor')
+        Professor.create_table()
+        u1 = dict(id=1, name='Chao', email='1@test.org')
+        s = Student(**u1)
+        s.insert()
+        p1 = dict(id=1, name='Ma', student=1)
+        p = Professor(**p1)
+        p.insert()
+        p.delete_by_pk(1)

@@ -1,4 +1,4 @@
-from fields import Field, AutoPrimaryKeyField, CharField
+from fields import *
 from utils import Dict
 import db
 
@@ -58,8 +58,17 @@ class Model(Dict):
     def create_table_sql(cls):
         """generate create table SQL"""
         sql = ['create table `%s` (\n' % cls.__table_name__]
+        constraints = []
         for field in cls.__fields__.values():
-            if isinstance(field, CharField):
+            if isinstance(field, ForeignKeyField):
+                sql.append('%s %s' % (field.name, field.data_type))
+                constraints.append(',FOREIGN KEY (%s) REFERENCES %s(%s)' %
+                           (field.name, field.related_model.__table_name__, field.related_field))
+                if field.on_delete:
+                    constraints.append(' ON DELETE %s' % field.on_delete)
+                if field.on_update:
+                    constraints.append(' ON UPDATE %s' % field.on_update)
+            elif isinstance(field, CharField):
                 sql.append('%s varchar(%d)' % (field.name, field.max_length))
             else:
                 sql.append('%s %s' % (field.name, field.data_type))
@@ -67,11 +76,13 @@ class Model(Dict):
                 sql.append(' NOT NULL')
             sql.append(',\n')
         sql.append('  primary key( %s )\n' % cls.__primary_key__.name)
+        sql.extend(constraints)
         sql.append(');')
         return ''.join(sql)
 
     @classmethod
     def create_table(cls):
+        print cls.create_table_sql()
         db.update(cls.create_table_sql())
         cls.create_index()
         cls.create_check()
