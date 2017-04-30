@@ -48,7 +48,7 @@ class ModelTests(TestCase):
         insert('student', **u1)
         u2 = dict(id=2, name='Ma', email='2@test.org')
         insert('student', **u2)
-        r=Student.get_by_pk(1)
+        r = Student.get_by_pk(1)
         self.assertEqual('Chao', r.name)
         r = Student.get_by_pk(2)
         self.assertEqual('Ma', r.name)
@@ -58,7 +58,7 @@ class ModelTests(TestCase):
         insert('student', **u1)
         u2 = dict(id=2, name='Ma', email='2@test.org')
         insert('student', **u2)
-        r=Student.get(name='Ma')
+        r = Student.get(name='Ma')
         self.assertEqual(2, r[0].id)
 
     def test_get_all(self):
@@ -66,7 +66,7 @@ class ModelTests(TestCase):
         insert('student', **u1)
         u2 = dict(id=2, name='Ma', email='2@test.org')
         insert('student', **u2)
-        r=Student.get_all()
+        r = Student.get_all()
         self.assertEqual(2, len(r))
 
     def test_get_first(self):
@@ -82,8 +82,8 @@ class ModelTests(TestCase):
         insert('student', **u1)
         u2 = dict(id=2, name='Chao', email='2@test.org')
         insert('student', **u2)
-        r=Student.count(name='Chao')
-        self.assertEqual(2,r)
+        r = Student.count(name='Chao')
+        self.assertEqual(2, r)
         r = Student.count(email='1@test.org')
         self.assertEqual(1, r)
 
@@ -101,11 +101,11 @@ class ModelTests(TestCase):
         insert('student', **u1)
         u2 = dict(id=2, name='Ma', email='2@test.org')
         insert('student', **u2)
-        r=s.get_by_pk(2)
+        r = s.get_by_pk(2)
         s2 = Student(**r)
-        s2.name='k'
+        s2.name = 'k'
         s2.update_all()
-        r2=s.get_by_pk(2)
+        r2 = s.get_by_pk(2)
         self.assertEqual('k', r2.name)
 
     def test_insert(self):

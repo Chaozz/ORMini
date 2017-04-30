@@ -82,7 +82,7 @@ class Model(Dict):
 
     @classmethod
     def create_table(cls):
-        print cls.create_table_sql()
+        # print cls.create_table_sql()
         db.update(cls.create_table_sql())
         cls.create_index()
         cls.create_check()

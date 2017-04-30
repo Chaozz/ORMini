@@ -1,0 +1,23 @@
+from demo import *
+
+clear()
+
+Sailor.create_table()
+
+Reserve.create_table()
+
+load_data('sailor', 'data.json')
+
+Reserve(sid=22, bid=101, day='10/10/96').insert()
+
+Sailor.get_all()
+r = Sailor.get(sname='dustin')
+print r
+
+s = Sailor(**r[0])
+s.sname = 'Tom'
+s.update_all()
+
+s.delete()
+
+https://www.youtube.com/watch?v=73CmOwzGD0k
