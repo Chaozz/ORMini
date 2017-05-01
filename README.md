@@ -70,7 +70,5 @@ __runtests.py__
 Run this file to do the unit tests and code linting.
 
 
-**The Project is still in progress. All the best and enjoy coding.**
-
 
 
